@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
@@ -64,10 +65,7 @@ public class ToggleAnimationCreator : EditorWindow
         }
     }
 
-    bool IsObjectAlreadySelected(GameObject obj)
-    {
-        return selectedObjects.Exists(data => data.gameObject == obj);
-    }
+    bool IsObjectAlreadySelected(GameObject obj){return selectedObjects.Exists(data => data.gameObject == obj);}
 
     void CreateAnimation()
     {
@@ -111,3 +109,4 @@ public class ToggleAnimationCreator : EditorWindow
         }
     }
 }
+#endif

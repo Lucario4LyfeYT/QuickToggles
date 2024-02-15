@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -30,8 +30,13 @@ public class AnimationLayerCreator : EditorWindow
 
         GUILayout.Space(20);
 
-        if (GUILayout.Button("Add Animation Layers"))
+        if (GUILayout.Button("Add Animation Layers")){
+            AnimatorControllerParameter param = new AnimatorControllerParameter();
+            param.type = AnimatorControllerParameterType.Bool;
+            param.name = "QuickToggleParam_____-____QuickToggleParm";
+            animatorController.AddParameter(param);
             AddLayersFromFolder();
+        }
     }
 
     void AddLayersFromFolder()
@@ -73,29 +78,26 @@ public class AnimationLayerCreator : EditorWindow
                 layer.stateMachine = new AnimatorStateMachine();
                 layer.defaultWeight = 1;
 
-                // Create int parameter for the animation
                 AnimatorControllerParameter param = new AnimatorControllerParameter();
                 param.type = AnimatorControllerParameterType.Int;
-                param.name = animationName + "_" + UnityEngine.Random.Range(1000, 9999); // Append a random number
+                param.name = animationName + "_" + UnityEngine.Random.Range(1000, 9999);
                 animatorController.AddParameter(param);
 
-                // Add animation clip to the layer
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(animationFile);
                 AnimatorState state = layer.stateMachine.AddState(animationName);
                 state.motion = clip;
 
-                // Add transitions
                 AnimatorState emptyState = layer.stateMachine.AddState("EmptyState");
                 layer.stateMachine.defaultState = emptyState;
 
                 AnimatorStateTransition transitionToAnimation = emptyState.AddTransition(state);
-                transitionToAnimation.AddCondition(AnimatorConditionMode.Equals, 1, param.name); // When parameter is set to 1
+                transitionToAnimation.AddCondition(AnimatorConditionMode.Equals, 1, param.name);
                 transitionToAnimation.duration = 0;
                 transitionToAnimation.exitTime = 0;
                 transitionToAnimation.hasFixedDuration = false;
 
                 AnimatorStateTransition transitionToEmpty = state.AddTransition(emptyState);
-                transitionToEmpty.AddCondition(AnimatorConditionMode.Equals, 0, param.name); // When parameter is set to 0
+                transitionToEmpty.AddCondition(AnimatorConditionMode.Equals, 0, param.name);
                 transitionToEmpty.duration = 0;
                 transitionToEmpty.exitTime = 0;
                 transitionToEmpty.hasFixedDuration = false;
